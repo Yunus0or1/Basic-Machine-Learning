@@ -37,8 +37,7 @@ models.append(('Gradient',ensemble.GradientBoostingRegressor()))
 # evaluate each model in turn
 results = []
 names = []
-seed = 7
-scoring = 'accuracy'
+
 for name, model in models:
     model.fit(X_train, Y_train)
     res = model.score(X_validation, Y_validation)
