@@ -18,8 +18,6 @@ from math import sqrt
 
 data = pandas.read_csv("apartment.csv")
 
-print(data.describe())
-
 X  = data.drop(['id','price','date','waterfront','lat','long','yr_renovated'],axis=1)
 Y = data['price']
 
@@ -30,18 +28,19 @@ X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(
 
 
 models = []
-models.append(('LDA', LinearDiscriminantAnalysis()))
-models.append(('KNN', KNeighborsClassifier()))
-models.append(('LinR', LinearRegression()))
-models.append(('Gradient',ensemble.GradientBoostingRegressor()))
+models.append(('LinearDiscriminantAnalysis', LinearDiscriminantAnalysis()))
+models.append(('KNeighborsClassifier', KNeighborsClassifier()))
+models.append(('LinearRegression', LinearRegression()))
+models.append(('GradientBoostingRegressor',ensemble.GradientBoostingRegressor()))
 # evaluate each model in turn
 results = []
 names = []
 
 for name, model in models:
     model.fit(X_train, Y_train)
-    res = model.score(X_validation, Y_validation)
-    print(name,':',res)
+    res = model.score(X_validation, Y_validation)*100
+
+    print(name,':',res,'%')
 
 
 classifier = LinearRegression()
@@ -49,7 +48,7 @@ classifier.fit(X_train, Y_train)
 predictions = classifier.predict(X_validation)
 
 rms = sqrt(mean_squared_error(Y_validation, predictions))
-print('Root Mean Square : ',rms)
+print('Root Mean Square in Linear Regression: ',rms)
 
 predictions = classifier.predict([[4,2,1200,5500,1,0,5,5,1200,0,1970,98178,1300,5000]])
 #predictions = knn.predict([[3,1,1180,5650,1,1,2,3,0,1000,1,1955,2,98178,48,-122.257,1340,5650]])
