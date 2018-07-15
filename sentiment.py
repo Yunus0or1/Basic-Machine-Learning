@@ -26,7 +26,7 @@ X  = data['data']
 Y = data['title']
 
 
-X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=0.5, random_state=2)
+X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size=0.3, random_state=2)
 
 cv = TfidfVectorizer(min_df=1)
 
@@ -38,20 +38,26 @@ X_validation_cv = cv.transform(X_validation)
 
 
 models = []
-models.append(('MNB', MultinomialNB()))
-models.append(('LR', LogisticRegression()))
-#models.append(('KNN', KNeighborsClassifier()))
-models.append(('DTC', DecisionTreeClassifier()))
+models.append(('MultinomialNB', MultinomialNB()))
+models.append(('LogisticRegression', LogisticRegression()))
+models.append(('KNeighborsClassifier', KNeighborsClassifier(n_neighbors=3)))
+#models.append(('DecisionTreeClassifier', DecisionTreeClassifier()))
 #models.append(('SVC', SVC()))
 # evaluate each model in turn
 results = []
 names = []
+
+seed = 7
+scoring = 'accuracy'
+
 for name, model in models:
-    model.fit(X_train_cv, Y_train)
-    res = model.score(X_validation_cv, Y_validation)
-    print(name,':',res)
+    kfold = model_selection.KFold(n_splits=10, random_state=seed)
+    cv_results = model_selection.cross_val_score(model, X_train_cv, Y_train, cv=kfold, scoring=scoring)
+    results.append(cv_results)
     names.append(name)
-    results.append(res)
+    accuracy = (cv_results.mean())*100
+    deviation = cv_results.std()*100
+    print(name, '[ Accuracy : ', accuracy , '% Deviation : ', deviation , '% ]')
 
 
 
@@ -69,6 +75,8 @@ new_data = 'আমি ভালো আছি'
 new_data_cv = cv.transform([new_data])
 
 predictions = classifier.predict(new_data_cv)
+
+print('Given Data : ',new_data)
 print('Prediction on given data : ',predictions)
 
 
