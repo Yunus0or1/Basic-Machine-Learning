@@ -41,19 +41,24 @@ X_validation_cv = cv.transform(X_validation)
 models = []
 models.append(('MNB', MultinomialNB()))
 models.append(('LR', LogisticRegression()))
-#models.append(('KNN', KNeighborsClassifier()))
-models.append(('DTC', DecisionTreeClassifier()))
+models.append(('KNN', KNeighborsClassifier()))
+#models.append(('DTC', DecisionTreeClassifier()))
 #models.append(('SVC', SVC()))
 # evaluate each model in turn
 results = []
 names = []
-for name, model in models:
-    model.fit(X_train_cv, Y_train)
-    res = model.score(X_validation_cv, Y_validation)
-    print(name,':',res)
-    names.append(name)
-    results.append(res)
 
+seed = 7
+scoring = 'accuracy'
+
+for name, model in models:
+    kfold = model_selection.KFold(n_splits=10, random_state=seed)
+    cv_results = model_selection.cross_val_score(model, X_train_cv, Y_train, cv=kfold, scoring=scoring)
+    results.append(cv_results)
+    names.append(name)
+    accuracy = (cv_results.mean())*100
+    deviation = cv_results.std()*100
+    print(name, '[ Accuracy : ', accuracy , '% Deviation : ', deviation , '% ]')
 
 
 classifier = MultinomialNB()
@@ -69,6 +74,7 @@ new_data = 'There are two possible explanations. '
 new_data_cv = cv.transform([new_data])
 
 predictions = classifier.predict(new_data_cv)
+print('Given Data : ',new_data)
 print('Prediction on given data : ',predictions)
 
 
