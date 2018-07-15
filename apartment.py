@@ -11,6 +11,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
+from sklearn.svm import SVR
+from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 from sklearn import ensemble
 from sklearn.metrics import mean_squared_error
@@ -32,6 +34,7 @@ models.append(('LinearDiscriminantAnalysis', LinearDiscriminantAnalysis()))
 models.append(('KNeighborsClassifier', KNeighborsClassifier()))
 models.append(('LinearRegression', LinearRegression()))
 models.append(('GradientBoostingRegressor',ensemble.GradientBoostingRegressor()))
+models.append(('BayesianRegressor',linear_model.BayesianRidge()))
 # evaluate each model in turn
 results = []
 names = []
